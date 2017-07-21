@@ -8,15 +8,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-
 public class JdbcUtil {
-private static String driverClass;
-private static String url;
-private static String user;
-private static String password;
+	private static String driverClass;
+	private static String url;
+	private static String user;
+	private static String password;
 	static {
 		try {
-			InputStream in = JdbcUtil.class.getClassLoader().getResourceAsStream("datasource.properties");
+			InputStream in = JdbcUtil.class.getClassLoader().getResourceAsStream("/db.properties");
 			Properties props = new Properties();
 			props.load(in);
 			driverClass = props.getProperty("drivarClass");
@@ -33,8 +32,9 @@ private static String password;
 		Connection con = DriverManager.getConnection(url, user, password);
 		return con;
 	}
-	public static void release(ResultSet rs,Statement stmt,Connection conn){
-		if(rs != null){
+
+	public static void release(ResultSet rs, Statement stmt, Connection conn) {
+		if (rs != null) {
 			try {
 				rs.close();
 			} catch (SQLException e) {
@@ -43,7 +43,7 @@ private static String password;
 			}
 			rs = null;
 		}
-		if(stmt != null){
+		if (stmt != null) {
 			try {
 				stmt.close();
 			} catch (SQLException e) {
@@ -52,7 +52,7 @@ private static String password;
 			}
 			stmt = null;
 		}
-		if(conn != null){
+		if (conn != null) {
 			try {
 				conn.close();
 			} catch (SQLException e) {

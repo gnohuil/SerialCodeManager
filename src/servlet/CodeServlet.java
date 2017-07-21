@@ -1,39 +1,66 @@
 package servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet implementation class CodeServlet
- */
+import dao.CodeDao;
+import model.Code;
+import util.StringEncrypt;
+
+
 public class CodeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public CodeServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		doPost(request, response);
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		request.setCharacterEncoding("utf-8");
+
+		String type = request.getParameter("type"); 
+		String deviceid = request.getParameter("deviceid"); 
+		String code = request.getParameter("code"); 
+		
+		String ret = "";
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		long now = System.currentTimeMillis();
+		CodeDao dao = new CodeDao();
+		Code c = new Code();
+		if(type==null) {
+			type = "";
+		}
+		if(type.equals("1")) {
+			for(int i=0 ; i <= 5; i++) {
+				Random r =new Random(i);
+				c.setCreat_time(df.format(new Date(now)));
+				System.out.println(StringEncrypt.Encrypt(System.currentTimeMillis()+"+"+i+r.nextLong()));
+				c.setCode(StringEncrypt.Encrypt(System.currentTimeMillis()+"+"+i+r.nextLong()));
+				dao.addCode(c);
+			}
+			
+		}else if(type.equals("2")) {
+			c = dao.getCode(code);
+			if(c != null) {
+				c.setDevice(deviceid);
+				c.setBind_time(df.format(new Date(now)));
+			}
+			dao.bindDevice(c);
+		}else {
+			
+		}
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		out.print(ret);
+		out.flush();
+		out.close();
 	}
 
 }
