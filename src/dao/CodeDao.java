@@ -1,5 +1,6 @@
 package dao;
 
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,7 +43,7 @@ public class CodeDao {
 		try {
 			Connection con = JdbcUtil.getConnection();
 			Statement st = con.createStatement();
-			st.executeQuery("insert into code (code,create_time) "
+			st.execute("insert into code (code,create_time) "
 					+ "values("+c.getCode()+","+c.getCreat_time()+")");
 		} catch (SQLException e) {
 			e.printStackTrace();
